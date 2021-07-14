@@ -39,7 +39,6 @@ class _TabScreenState extends State<TabScreen> {
             articleUrl: element["url"],
           );
           news.add(newsModel);
-          print("hello");
         }
       });
     }
@@ -62,7 +61,6 @@ class _TabScreenState extends State<TabScreen> {
             articleUrl: element["url"],
           );
           blog.add(searchNewsModel);
-          print("hello");
         }
       });
     }
