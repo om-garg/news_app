@@ -10,7 +10,7 @@ import 'package:news_app/widgets/news_tile.dart';
 class TabScreen extends StatefulWidget {
   final String searchQuery;
   const TabScreen({
-  required this.searchQuery,
+    required this.searchQuery,
   });
 
   @override
@@ -22,16 +22,18 @@ class _TabScreenState extends State<TabScreen> {
   List<NewsModel> news = [];
   List<SearchNewsModel> blog = [];
   TextEditingController searchController = new TextEditingController();
-  getCategoryNews(String query) async{
-    var response = await http.get(Uri.parse("https://newsapi.org/v2/everything?q=$query&apiKey=d605e6f22f1f4837aca28cd537d89733"),
-        headers: {
-          "Authorization" : apiKey
-        });
+  getCategoryNews(String query) async {
+    var response = await http.get(
+        Uri.parse(
+            "https://newsapi.org/v2/everything?q=$query&apiKey=d605e6f22f1f4837aca28cd537d89733"),
+        headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    if(jsonData['status'] == "ok"){
-      jsonData["articles"].forEach((element){
-
-        if(element['urlToImage'] != null && element['description'] != null && element['title'] != null && element["url"] != null){
+    if (jsonData['status'] == "ok") {
+      jsonData["articles"].forEach((element) {
+        if (element['urlToImage'] != null &&
+            element['description'] != null &&
+            element['title'] != null &&
+            element["url"] != null) {
           NewsModel newsModel = NewsModel(
             title: element['title'],
             description: element['description'],
@@ -42,18 +44,21 @@ class _TabScreenState extends State<TabScreen> {
         }
       });
     }
-    setState((){});
+    setState(() {});
   }
-  getTrendingNews() async{
-    var response = await http.get(Uri.parse("https://newsapi.org/v2/top-headlines?country=in&apiKey=d605e6f22f1f4837aca28cd537d89733"),
-        headers: {
-          "Authorization" : apiKey
-        });
-    Map<String, dynamic> jsonData = jsonDecode(response.body);
-    if(jsonData['status'] == "ok"){
-      jsonData["articles"].forEach((element){
 
-        if(element['urlToImage'] != null && element['description'] != null && element['title'] != null && element["url"] != null){
+  getTrendingNews() async {
+    var response = await http.get(
+        Uri.parse(
+            "https://newsapi.org/v2/top-headlines?country=in&apiKey=d605e6f22f1f4837aca28cd537d89733"),
+        headers: {"Authorization": apiKey});
+    Map<String, dynamic> jsonData = jsonDecode(response.body);
+    if (jsonData['status'] == "ok") {
+      jsonData["articles"].forEach((element) {
+        if (element['urlToImage'] != null &&
+            element['description'] != null &&
+            element['title'] != null &&
+            element["url"] != null) {
           SearchNewsModel searchNewsModel = SearchNewsModel(
             title: element['title'],
             description: element['description'],
@@ -64,8 +69,9 @@ class _TabScreenState extends State<TabScreen> {
         }
       });
     }
-    setState((){});
+    setState(() {});
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -73,6 +79,7 @@ class _TabScreenState extends State<TabScreen> {
     getCategoryNews(widget.searchQuery);
     getTrendingNews();
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -86,12 +93,18 @@ class _TabScreenState extends State<TabScreen> {
               scrollDirection: Axis.horizontal,
               itemCount: news.length,
               shrinkWrap: true,
-              itemBuilder: (context, index){
-                return CategoryTile(
-                  imgUrl: news[index].urlToImage ,
-                  title: news[index].title,
-                  posturl: news[index].articleUrl,
-                  desc: news[index].description,
+              itemBuilder: (context, index) {
+                return FutureBuilder(
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      return CategoryTile(
+                        imgUrl: news[index].urlToImage,
+                        title: news[index].title,
+                        posturl: news[index].articleUrl,
+                        desc: news[index].description,
+                      );
+                  },
+                  future: getCategoryNews(widget.searchQuery),
                 );
               },
             ),
@@ -104,8 +117,7 @@ class _TabScreenState extends State<TabScreen> {
                   color: Colors.black,
                   fontSize: 20,
                   fontFamily: 'Overpass',
-                  fontWeight: FontWeight.bold
-              ),
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Container(
@@ -114,9 +126,9 @@ class _TabScreenState extends State<TabScreen> {
               physics: ClampingScrollPhysics(),
               itemCount: blog.length,
               shrinkWrap: true,
-              itemBuilder: (context, index){
+              itemBuilder: (context, index) {
                 return NewsTile(
-                  imgUrl: blog[index].urlToImage ,
+                  imgUrl: blog[index].urlToImage,
                   title: blog[index].title,
                   posturl: blog[index].articleUrl,
                   desc: blog[index].description,
